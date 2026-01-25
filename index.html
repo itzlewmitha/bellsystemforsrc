@@ -483,6 +483,11 @@
             margin-top: 0.5rem;
             font-weight: 600;
         }
+        
+        /* Audio control styles */
+        .audio-control {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -654,36 +659,76 @@
         <button id="cancelInstallBtn" style="background-color: transparent; margin-left: 0.5rem;">Not Now</button>
     </div>
 
+    <!-- Hidden audio elements for bells -->
+    <div class="audio-control">
+        <audio id="audio-assembly" preload="auto">
+            <source src="bells/Bell.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-period1" preload="auto">
+            <source src="bells/Bell_06_1st.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-period2" preload="auto">
+            <source src="bells/Bell_06_2nd.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-period3" preload="auto">
+            <source src="bells/Bell_06_3rd.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-period4" preload="auto">
+            <source src="bells/Bell_06_4th.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-interval" preload="auto">
+            <source src="bells/Bell_06_Int.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-period5" preload="auto">
+            <source src="bells/Bell_06_5th.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-period6" preload="auto">
+            <source src="bells/Bell_06_6th.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-period7" preload="auto">
+            <source src="bells/Bell_06_7th.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-period8" preload="auto">
+            <source src="bells/Bell_06_8th.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-schoolend" preload="auto">
+            <source src="bells/Bell_06_8thEnd.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="audio-special" preload="auto">
+            <source src="bells/Special.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
     <!-- JavaScript -->
     <script>
         // Default bell schedule
         const defaultSchedule = [
-            { id: 'assembly', name: 'School Start / Assembly', time: '07:45', sound: 'Bell.mp3' },
-            { id: 'period1', name: 'Period 1', time: '08:00', sound: 'Bell_06_1st.mp3' },
-            { id: 'period2', name: 'Period 2', time: '08:40', sound: 'Bell_06_2nd.mp3' },
-            { id: 'period3', name: 'Period 3', time: '09:20', sound: 'Bell_06_3rd.mp3' },
-            { id: 'period4', name: 'Period 4', time: '10:00', sound: 'Bell_06_4th.mp3' },
-            { id: 'interval', name: 'Interval', time: '10:30', sound: 'Bell_06_Int.mp3' },
-            { id: 'period5', name: 'Period 5', time: '10:50', sound: 'Bell_06_5th.mp3' },
-            { id: 'period6', name: 'Period 6', time: '11:30', sound: 'Bell_06_6th.mp3' },
-            { id: 'period7', name: 'Period 7', time: '12:10', sound: 'Bell_06_7th.mp3' },
-            { id: 'period8', name: 'Period 8', time: '12:50', sound: 'Bell_06_8th.mp3' },
-            { id: 'schoolEnd', name: 'School End', time: '13:30', sound: 'Bell_06_8thEnd.mp3' }
+            { id: 'assembly', name: 'School Start / Assembly', time: '07:45', sound: 'Bell.mp3', audioId: 'audio-assembly' },
+            { id: 'period1', name: 'Period 1', time: '08:00', sound: 'Bell_06_1st.mp3', audioId: 'audio-period1' },
+            { id: 'period2', name: 'Period 2', time: '08:40', sound: 'Bell_06_2nd.mp3', audioId: 'audio-period2' },
+            { id: 'period3', name: 'Period 3', time: '09:20', sound: 'Bell_06_3rd.mp3', audioId: 'audio-period3' },
+            { id: 'period4', name: 'Period 4', time: '10:00', sound: 'Bell_06_4th.mp3', audioId: 'audio-period4' },
+            { id: 'interval', name: 'Interval', time: '10:30', sound: 'Bell_06_Int.mp3', audioId: 'audio-interval' },
+            { id: 'period5', name: 'Period 5', time: '10:50', sound: 'Bell_06_5th.mp3', audioId: 'audio-period5' },
+            { id: 'period6', name: 'Period 6', time: '11:30', sound: 'Bell_06_6th.mp3', audioId: 'audio-period6' },
+            { id: 'period7', name: 'Period 7', time: '12:10', sound: 'Bell_06_7th.mp3', audioId: 'audio-period7' },
+            { id: 'period8', name: 'Period 8', time: '12:50', sound: 'Bell_06_8th.mp3', audioId: 'audio-period8' },
+            { id: 'schoolEnd', name: 'School End', time: '13:30', sound: 'Bell_06_8thEnd.mp3', audioId: 'audio-schoolend' }
         ];
         
         // Manual bell buttons data
         const manualBells = [
-            { name: 'Assembly', sound: 'Bell.mp3' },
-            { name: 'Period 1', sound: 'Bell_06_1st.mp3' },
-            { name: 'Period 2', sound: 'Bell_06_2nd.mp3' },
-            { name: 'Period 3', sound: 'Bell_06_3rd.mp3' },
-            { name: 'Period 4', sound: 'Bell_06_4th.mp3' },
-            { name: 'Interval', sound: 'Bell_06_Int.mp3' },
-            { name: 'Period 5', sound: 'Bell_06_5th.mp3' },
-            { name: 'Period 6', sound: 'Bell_06_6th.mp3' },
-            { name: 'Period 7', sound: 'Bell_06_7th.mp3' },
-            { name: 'Period 8', sound: 'Bell_06_8th.mp3' },
-            { name: 'School End', sound: 'Bell_06_8thEnd.mp3' }
+            { name: 'Assembly', sound: 'Bell.mp3', audioId: 'audio-assembly' },
+            { name: 'Period 1', sound: 'Bell_06_1st.mp3', audioId: 'audio-period1' },
+            { name: 'Period 2', sound: 'Bell_06_2nd.mp3', audioId: 'audio-period2' },
+            { name: 'Period 3', sound: 'Bell_06_3rd.mp3', audioId: 'audio-period3' },
+            { name: 'Period 4', sound: 'Bell_06_4th.mp3', audioId: 'audio-period4' },
+            { name: 'Interval', sound: 'Bell_06_Int.mp3', audioId: 'audio-interval' },
+            { name: 'Period 5', sound: 'Bell_06_5th.mp3', audioId: 'audio-period5' },
+            { name: 'Period 6', sound: 'Bell_06_6th.mp3', audioId: 'audio-period6' },
+            { name: 'Period 7', sound: 'Bell_06_7th.mp3', audioId: 'audio-period7' },
+            { name: 'Period 8', sound: 'Bell_06_8th.mp3', audioId: 'audio-period8' },
+            { name: 'School End', sound: 'Bell_06_8thEnd.mp3', audioId: 'audio-schoolend' }
         ];
         
         // Application state
@@ -692,6 +737,7 @@
         let bellSchedule = [];
         let checkInterval;
         let deferredPrompt;
+        let currentAudio = null; // Track currently playing audio
         
         // DOM Elements
         const loginPage = document.getElementById('loginPage');
@@ -803,7 +849,7 @@
             resetScheduleBtn.addEventListener('click', resetSchedule);
             
             // Special bell button
-            specialBellBtn.addEventListener('click', () => playBell('Special.mp3', 'Special/Emergency Bell'));
+            specialBellBtn.addEventListener('click', () => playBellFromId('audio-special', 'Special/Emergency Bell'));
             
             // PWA install buttons
             installBtn.addEventListener('click', async () => {
@@ -912,7 +958,7 @@
                     <td>${bell.name}</td>
                     <td><input type="time" class="time-input" value="${bell.time}"></td>
                     <td>
-                        <button class="btn-icon" onclick="playBell('${bell.sound}', '${bell.name}')" title="Play ${bell.name} Bell">
+                        <button class="btn-icon" onclick="playBellFromId('${bell.audioId}', '${bell.name}')" title="Play ${bell.name} Bell">
                             <i class="fas fa-play"></i>
                         </button>
                     </td>
@@ -930,7 +976,7 @@
                 const button = document.createElement('button');
                 button.className = 'bell-btn';
                 button.textContent = bell.name;
-                button.addEventListener('click', () => playBell(bell.sound, bell.name));
+                button.addEventListener('click', () => playBellFromId(bell.audioId, bell.name));
                 manualBellsGrid.appendChild(button);
             });
         }
@@ -1043,25 +1089,98 @@
                 const bellMinutes = convertTimeToMinutes(bell.time);
                 
                 if (currentMinutes === bellMinutes) {
-                    playBell(bell.sound, bell.name);
+                    playBellFromId(bell.audioId, bell.name);
                     lastBell.textContent = `${bell.name} at ${formatTimeDisplay(bell.time)}`;
                     break;
                 }
             }
         }
         
-        // Play bell sound
-        function playBell(soundFile, bellName) {
-    const audio = new Audio();
-    audio.src = `bells/${soundFile}`; // <- use the bells folder
-    audio.play().then(() => {
-        console.log(`Playing ${bellName} bell (${soundFile})`);
-        showBellNotification(bellName);
-    }).catch(error => {
-        console.error('Error playing bell sound:', error);
-        console.log('\x07'); // fallback beep
-    });
-}
+        // Play bell sound from audio element ID
+        function playBellFromId(audioId, bellName) {
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            
+            // Get audio element
+            const audioElement = document.getElementById(audioId);
+            
+            if (!audioElement) {
+                console.error(`Audio element not found: ${audioId}`);
+                // Fallback to online sound
+                playFallbackBell(bellName);
+                return;
+            }
+            
+            // Play the sound
+            audioElement.currentTime = 0; // Reset to start
+            const playPromise = audioElement.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log(`Playing ${bellName} bell`);
+                    showBellNotification(bellName);
+                    currentAudio = audioElement;
+                    
+                    // Reset currentAudio when sound ends
+                    audioElement.onended = () => {
+                        if (currentAudio === audioElement) {
+                            currentAudio = null;
+                        }
+                    };
+                }).catch(error => {
+                    console.error('Error playing bell sound:', error);
+                    // Fallback to online sound
+                    playFallbackBell(bellName);
+                });
+            }
+        }
+        
+        // Fallback bell sound using online resources
+        function playFallbackBell(bellName) {
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            
+            const audio = new Audio();
+            
+            // Use different online bell sounds based on the bell type
+            let soundUrl = '';
+            if (bellName.includes('Assembly') || bellName.includes('Interval')) {
+                soundUrl = 'https://assets.mixkit.co/sfx/preview/mixkit-school-bell-1016.mp3';
+            } else if (bellName.includes('School End')) {
+                soundUrl = 'https://assets.mixkit.co/sfx/preview/mixkit-classic-alarm-995.mp3';
+            } else if (bellName.includes('Special')) {
+                soundUrl = 'https://assets.mixkit.co/sfx/preview/mixkit-emergency-alert-siren-1007.mp3';
+            } else {
+                soundUrl = 'https://assets.mixkit.co/sfx/preview/mixkit-bell-notification-933.mp3';
+            }
+            
+            audio.src = soundUrl;
+            audio.volume = 0.7;
+            
+            audio.play().then(() => {
+                console.log(`Playing fallback ${bellName} bell`);
+                showBellNotification(bellName);
+                currentAudio = audio;
+                
+                // Reset currentAudio when sound ends
+                audio.onended = () => {
+                    if (currentAudio === audio) {
+                        currentAudio = null;
+                    }
+                };
+            }).catch(error => {
+                console.error('Error playing fallback bell:', error);
+                // Last resort: browser beep
+                console.log('\x07');
+            });
+        }
+        
         // Show bell notification
         function showBellNotification(bellName) {
             // Create notification element

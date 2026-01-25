@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Rahula College Bell System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --navy-blue: #0a2463;
+            --dark-navy: #071736;
+            --light-blue: #3e92cc;
+            --white: #ffffff;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #333333;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-navy);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--dark-navy) 0%, var(--navy-blue) 100%);
+        }
+        
+        .login-box {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .login-box h1 {
+            color: var(--navy-blue);
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .login-box p {
+            color: var(--dark-gray);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background-color: var(--navy-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--white);
+            font-size: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--navy-blue);
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--light-blue);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background-color: var(--navy-blue);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--light-blue);
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background-color: var(--navy-blue);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .status-running {
+            background-color: var(--success);
+        }
+        
+        .status-stopped {
+            background-color: var(--danger);
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light-blue);
+            color: var(--white);
+        }
+        
+        /* Time Display */
+        .time-display {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .current-time {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--light-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .current-date {
+            font-size: 1.1rem;
+            color: var(--medium-gray);
+        }
+        
+        .next-bell-info {
+            background-color: rgba(62, 146, 204, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .next-bell-label {
+            font-size: 1rem;
+            color: var(--medium-gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .next-bell-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .next-bell-time {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .countdown {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+        
+        /* Schedule Table */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .schedule-table th,
+        .schedule-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .schedule-table th {
+            color: var(--light-blue);
+            font-weight: 600;
+        }
+        
+        .schedule-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .time-input {
+            width: 100px;
+            padding: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            color: var(--white);
+        }
+        
+        /* Manual Bells */
+        .manual-bells-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .bell-btn {
+            background-color: var(--navy-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .bell-btn:hover {
+            background-color: var(--light-blue);
+            transform: translateY(-2px);
+        }
+        
+        .bell-btn.special {
+            background-color: var(--warning);
+            color: var(--dark-gray);
+        }
+        
+        .bell-btn.special:hover {
+            background-color: #ffb74d;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--dark-navy);
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+        }
+        
+        .footer p {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--dark-navy);
+            border-radius: 10px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+        
+        .mt-3 {
+            margin-top: 1rem;
+        }
+        
+        .d-flex {
+            display: flex;
+        }
+        
+        .justify-content-between {
+            justify-content: space-between;
+        }
+        
+        .align-items-center {
+            align-items: center;
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .current-time {
+                font-size: 2rem;
+            }
+            
+            .manual-bells-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .login-box {
+                padding: 2rem 1.5rem;
+            }
+        }
+        
+        /* PWA Install Prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--navy-blue);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 999;
+            max-width: 300px;
+        }
+        
+        .install-prompt button {
+            background-color: var(--light-blue);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <div class="logo">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h1>Sri Rahula College</h1>
+            <p>Online School Bell System</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            
+            <div class="mt-3">
+                <p style="font-size: 0.8rem; color: #777;">Default: username: bell, password: 1234</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-bell"></i> Sri Rahula College Bell System</h1>
+            <div class="header-controls">
+                <div class="status-indicator status-stopped" id="statusIndicator">
+                    <div class="status-dot"></div>
+                    <span id="statusText">Stopped</span>
+                </div>
+                <button class="btn-icon" id="startStopBtn" title="Start/Stop Bell System">
+                    <i class="fas fa-play" id="startStopIcon"></i>
+                </button>
+                <button class="btn-icon" id="logoutBtn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-grid">
+                <!-- Time Display & Next Bell -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-clock"></i> Current Time & Next Bell
+                    </h2>
+                    
+                    <div class="time-display">
+                        <div class="current-time" id="currentTime">00:00:00</div>
+                        <div class="current-date" id="currentDate">Monday, 1 January 2023</div>
+                    </div>
+                    
+                    <div class="next-bell-info">
+                        <div class="next-bell-label">Next Bell</div>
+                        <div class="next-bell-name" id="nextBellName">School Start</div>
+                        <div class="next-bell-time" id="nextBellTime">07:45 AM</div>
+                        <div class="countdown" id="countdown">00:00:00</div>
+                    </div>
+                    
+                    <div class="mt-3 text-center">
+                        <button class="btn btn-primary" id="toggleBellBtn">
+                            <i class="fas fa-bell"></i> Start Bell System
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Bell Schedule Editor -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-edit"></i> Bell Schedule
+                    </h2>
+                    
+                    <div class="table-responsive">
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Bell</th>
+                                    <th>Time</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scheduleTable">
+                                <!-- Schedule rows will be inserted here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-3 d-flex justify-content-between">
+                        <button class="btn btn-primary" id="saveScheduleBtn">
+                            <i class="fas fa-save"></i> Save Schedule
+                        </button>
+                        <button class="btn" id="resetScheduleBtn" style="background-color: var(--medium-gray);">
+                            <i class="fas fa-undo"></i> Reset to Default
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Manual Bell Controls -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-hand-point-up"></i> Manual Bell Controls
+                    </h2>
+                    
+                    <p class="mb-3">Click any bell to play it manually</p>
+                    
+                    <div class="manual-bells-grid">
+                        <!-- Manual bell buttons will be inserted here by JavaScript -->
+                    </div>
+                    
+                    <div class="mt-3">
+                        <button class="bell-btn special" id="specialBellBtn">
+                            <i class="fas fa-exclamation-triangle"></i> Special / Emergency Bell
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- System Info -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <i class="fas fa-info-circle"></i> System Information
+                    </h2>
+                    
+                    <div class="mb-3">
+                        <p><strong>Timezone:</strong> <span id="timezoneInfo">Asia/Colombo</span></p>
+                        <p><strong>Device Time:</strong> <span id="deviceTime">Syncing...</span></p>
+                        <p><strong>Bell System Status:</strong> <span id="systemStatus">Not Running</span></p>
+                        <p><strong>Last Bell:</strong> <span id="lastBell">None</span></p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <p><strong>Instructions:</strong></p>
+                        <ul style="padding-left: 1.2rem; font-size: 0.9rem;">
+                            <li>Click "Start Bell System" to begin automatic bell ringing</li>
+                            <li>Edit bell times as needed, then click "Save Schedule"</li>
+                            <li>Use manual controls to play bells anytime</li>
+                            <li>System uses your device's local time</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© All rights reserved SRC ICT Club</p>
+            <p>Sri Rahula College Bell System v1.0</p>
+        </footer>
+    </div>
+    
+    <!-- PWA Install Prompt -->
+    <div class="install-prompt" id="installPrompt">
+        <p>Install Sri Rahula College Bell System for easy access!</p>
+        <button id="installBtn">Install App</button>
+        <button id="cancelInstallBtn" style="background-color: transparent; margin-left: 0.5rem;">Not Now</button>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Default bell schedule
+        const defaultSchedule = [
+            { id: 'assembly', name: 'School Start / Assembly', time: '07:45', sound: 'Bell.mp3' },
+            { id: 'period1', name: 'Period 1', time: '08:00', sound: 'Bell_06_1st.mp3' },
+            { id: 'period2', name: 'Period 2', time: '08:40', sound: 'Bell_06_2nd.mp3' },
+            { id: 'period3', name: 'Period 3', time: '09:20', sound: 'Bell_06_3rd.mp3' },
+            { id: 'period4', name: 'Period 4', time: '10:00', sound: 'Bell_06_4th.mp3' },
+            { id: 'interval', name: 'Interval', time: '10:30', sound: 'Bell_06_Int.mp3' },
+            { id: 'period5', name: 'Period 5', time: '10:50', sound: 'Bell_06_5th.mp3' },
+            { id: 'period6', name: 'Period 6', time: '11:30', sound: 'Bell_06_6th.mp3' },
+            { id: 'period7', name: 'Period 7', time: '12:10', sound: 'Bell_06_7th.mp3' },
+            { id: 'period8', name: 'Period 8', time: '12:50', sound: 'Bell_06_8th.mp3' },
+            { id: 'schoolEnd', name: 'School End', time: '13:30', sound: 'Bell_06_8thEnd.mp3' }
+        ];
+        
+        // Manual bell buttons data
+        const manualBells = [
+            { name: 'Assembly', sound: 'Bell.mp3' },
+            { name: 'Period 1', sound: 'Bell_06_1st.mp3' },
+            { name: 'Period 2', sound: 'Bell_06_2nd.mp3' },
+            { name: 'Period 3', sound: 'Bell_06_3rd.mp3' },
+            { name: 'Period 4', sound: 'Bell_06_4th.mp3' },
+            { name: 'Interval', sound: 'Bell_06_Int.mp3' },
+            { name: 'Period 5', sound: 'Bell_06_5th.mp3' },
+            { name: 'Period 6', sound: 'Bell_06_6th.mp3' },
+            { name: 'Period 7', sound: 'Bell_06_7th.mp3' },
+            { name: 'Period 8', sound: 'Bell_06_8th.mp3' },
+            { name: 'School End', sound: 'Bell_06_8thEnd.mp3' }
+        ];
+        
+        // Application state
+        let isLoggedIn = false;
+        let isBellSystemRunning = false;
+        let bellSchedule = [];
+        let checkInterval;
+        let deferredPrompt;
+        
+        // DOM Elements
+        const loginPage = document.getElementById('loginPage');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('loginForm');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const startStopBtn = document.getElementById('startStopBtn');
+        const toggleBellBtn = document.getElementById('toggleBellBtn');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const statusText = document.getElementById('statusText');
+        const startStopIcon = document.getElementById('startStopIcon');
+        const currentTime = document.getElementById('currentTime');
+        const currentDate = document.getElementById('currentDate');
+        const nextBellName = document.getElementById('nextBellName');
+        const nextBellTime = document.getElementById('nextBellTime');
+        const countdown = document.getElementById('countdown');
+        const scheduleTable = document.getElementById('scheduleTable');
+        const saveScheduleBtn = document.getElementById('saveScheduleBtn');
+        const resetScheduleBtn = document.getElementById('resetScheduleBtn');
+        const manualBellsGrid = document.querySelector('.manual-bells-grid');
+        const specialBellBtn = document.getElementById('specialBellBtn');
+        const timezoneInfo = document.getElementById('timezoneInfo');
+        const deviceTime = document.getElementById('deviceTime');
+        const systemStatus = document.getElementById('systemStatus');
+        const lastBell = document.getElementById('lastBell');
+        const installPrompt = document.getElementById('installPrompt');
+        const installBtn = document.getElementById('installBtn');
+        const cancelInstallBtn = document.getElementById('cancelInstallBtn');
+        
+        // Initialize the application
+        function init() {
+            // Check if user is already logged in (from localStorage)
+            const savedLogin = localStorage.getItem('bellSystemLoggedIn');
+            if (savedLogin === 'true') {
+                login();
+            }
+            
+            // Load bell schedule from localStorage or use default
+            loadSchedule();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initialize time display
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // Populate schedule table
+            renderScheduleTable();
+            
+            // Populate manual bell buttons
+            renderManualBells();
+            
+            // Check for PWA install prompt
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                // Show install prompt after a delay
+                setTimeout(() => {
+                    if (!isPWAInstalled()) {
+                        installPrompt.style.display = 'block';
+                    }
+                }, 5000);
+            });
+            
+            // Check if running as PWA
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('Running as PWA');
+            }
+        }
+        
+        // Check if PWA is already installed
+        function isPWAInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone === true;
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Login form
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                // Simple authentication (front-end only)
+                if (username === 'bell' && password === '1234') {
+                    login();
+                } else {
+                    alert('Invalid username or password. Default: username: bell, password: 1234');
+                }
+            });
+            
+            // Logout button
+            logoutBtn.addEventListener('click', logout);
+            
+            // Start/stop bell system (header button)
+            startStopBtn.addEventListener('click', toggleBellSystem);
+            
+            // Start/stop bell system (main button)
+            toggleBellBtn.addEventListener('click', toggleBellSystem);
+            
+            // Save schedule button
+            saveScheduleBtn.addEventListener('click', saveSchedule);
+            
+            // Reset schedule button
+            resetScheduleBtn.addEventListener('click', resetSchedule);
+            
+            // Special bell button
+            specialBellBtn.addEventListener('click', () => playBell('Special.mp3', 'Special/Emergency Bell'));
+            
+            // PWA install buttons
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    
+                    if (outcome === 'accepted') {
+                        console.log('PWA installed');
+                    }
+                    
+                    deferredPrompt = null;
+                    installPrompt.style.display = 'none';
+                }
+            });
+            
+            cancelInstallBtn.addEventListener('click', () => {
+                installPrompt.style.display = 'none';
+            });
+        }
+        
+        // Login function
+        function login() {
+            isLoggedIn = true;
+            localStorage.setItem('bellSystemLoggedIn', 'true');
+            loginPage.style.display = 'none';
+            dashboard.style.display = 'flex';
+            
+            // Update timezone display
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            timezoneInfo.textContent = timezone;
+        }
+        
+        // Logout function
+        function logout() {
+            isLoggedIn = false;
+            localStorage.removeItem('bellSystemLoggedIn');
+            
+            // Stop bell system if running
+            if (isBellSystemRunning) {
+                stopBellSystem();
+            }
+            
+            // Reset UI
+            dashboard.style.display = 'none';
+            loginPage.style.display = 'flex';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+        
+        // Load schedule from localStorage
+        function loadSchedule() {
+            const savedSchedule = localStorage.getItem('bellSchedule');
+            if (savedSchedule) {
+                bellSchedule = JSON.parse(savedSchedule);
+            } else {
+                // Use default schedule
+                bellSchedule = JSON.parse(JSON.stringify(defaultSchedule));
+            }
+        }
+        
+        // Save schedule to localStorage
+        function saveSchedule() {
+            // Get updated times from the table
+            const timeInputs = document.querySelectorAll('.time-input');
+            timeInputs.forEach((input, index) => {
+                if (index < bellSchedule.length) {
+                    bellSchedule[index].time = input.value;
+                }
+            });
+            
+            // Sort schedule by time
+            bellSchedule.sort((a, b) => {
+                const timeA = convertTimeToMinutes(a.time);
+                const timeB = convertTimeToMinutes(b.time);
+                return timeA - timeB;
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('bellSchedule', JSON.stringify(bellSchedule));
+            
+            // Show success message
+            alert('Schedule saved successfully!');
+            
+            // Update next bell display
+            updateNextBell();
+        }
+        
+        // Reset schedule to default
+        function resetSchedule() {
+            if (confirm('Are you sure you want to reset the schedule to default?')) {
+                bellSchedule = JSON.parse(JSON.stringify(defaultSchedule));
+                renderScheduleTable();
+                alert('Schedule reset to default.');
+            }
+        }
+        
+        // Render schedule table
+        function renderScheduleTable() {
+            scheduleTable.innerHTML = '';
+            
+            bellSchedule.forEach((bell, index) => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${bell.name}</td>
+                    <td><input type="time" class="time-input" value="${bell.time}"></td>
+                    <td>
+                        <button class="btn-icon" onclick="playBell('${bell.sound}', '${bell.name}')" title="Play ${bell.name} Bell">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </td>
+                `;
+                
+                scheduleTable.appendChild(row);
+            });
+        }
+        
+        // Render manual bell buttons
+        function renderManualBells() {
+            manualBellsGrid.innerHTML = '';
+            
+            manualBells.forEach(bell => {
+                const button = document.createElement('button');
+                button.className = 'bell-btn';
+                button.textContent = bell.name;
+                button.addEventListener('click', () => playBell(bell.sound, bell.name));
+                manualBellsGrid.appendChild(button);
+            });
+        }
+        
+        // Update time display
+        function updateTime() {
+            const now = new Date();
+            
+            // Format time as HH:MM:SS
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            // Format date
+            const dateString = now.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            // Update displays
+            currentTime.textContent = timeString;
+            currentDate.textContent = dateString;
+            deviceTime.textContent = now.toLocaleTimeString();
+            
+            // Update next bell if system is running
+            if (isBellSystemRunning) {
+                updateNextBell();
+                checkBellSchedule(now);
+            }
+        }
+        
+        // Update next bell information
+        function updateNextBell() {
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            
+            // Find the next bell
+            let nextBell = null;
+            let minDiff = Infinity;
+            
+            for (const bell of bellSchedule) {
+                const bellMinutes = convertTimeToMinutes(bell.time);
+                let diff = bellMinutes - currentMinutes;
+                
+                // If bell is already passed today, check for tomorrow
+                if (diff < 0) {
+                    diff += 24 * 60; // Add 24 hours in minutes
+                }
+                
+                if (diff > 0 && diff < minDiff) {
+                    minDiff = diff;
+                    nextBell = bell;
+                }
+            }
+            
+            // Update UI
+            if (nextBell) {
+                nextBellName.textContent = nextBell.name;
+                nextBellTime.textContent = formatTimeDisplay(nextBell.time);
+                
+                // Calculate countdown
+                const countdownDate = new Date(now);
+                const [hours, minutes] = nextBell.time.split(':').map(Number);
+                countdownDate.setHours(hours, minutes, 0, 0);
+                
+                if (countdownDate < now) {
+                    countdownDate.setDate(countdownDate.getDate() + 1);
+                }
+                
+                updateCountdown(countdownDate);
+            } else {
+                nextBellName.textContent = 'No more bells today';
+                nextBellTime.textContent = '--:--';
+                countdown.textContent = '--:--:--';
+            }
+        }
+        
+        // Update countdown timer
+        function updateCountdown(targetTime) {
+            const now = new Date();
+            const diff = targetTime - now;
+            
+            if (diff <= 0) {
+                countdown.textContent = '00:00:00';
+                return;
+            }
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            countdown.textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Check if any bell should be played
+        function checkBellSchedule(now) {
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const currentSeconds = now.getSeconds();
+            
+            // Only check at the start of each minute (when seconds = 0)
+            if (currentSeconds !== 0) return;
+            
+            for (const bell of bellSchedule) {
+                const bellMinutes = convertTimeToMinutes(bell.time);
+                
+                if (currentMinutes === bellMinutes) {
+                    playBell(bell.sound, bell.name);
+                    lastBell.textContent = `${bell.name} at ${formatTimeDisplay(bell.time)}`;
+                    break;
+                }
+            }
+        }
+        
+        // Play bell sound
+        function playBell(soundFile, bellName) {
+            // Create audio element
+            const audio = new Audio();
+            
+            // Use a placeholder sound since we don't have actual bell files
+            // In a real implementation, you would use the actual sound files
+            audio.src = `https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3`;
+            
+            // Play the sound
+            audio.play().then(() => {
+                console.log(`Playing ${bellName} bell (${soundFile})`);
+                
+                // Show notification
+                showBellNotification(bellName);
+            }).catch(error => {
+                console.error('Error playing bell sound:', error);
+                
+                // Fallback: Use browser's built-in beep
+                console.log('\x07'); // ASCII bell character
+            });
+        }
+        
+        // Show bell notification
+        function showBellNotification(bellName) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: var(--light-blue);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                z-index: 1000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            notification.textContent = `🔔 ${bellName} Bell Ringing!`;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+            
+            // Add CSS animations if not already added
+            if (!document.getElementById('notification-animations')) {
+                const style = document.createElement('style');
+                style.id = 'notification-animations';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // Toggle bell system on/off
+        function toggleBellSystem() {
+            if (isBellSystemRunning) {
+                stopBellSystem();
+            } else {
+                startBellSystem();
+            }
+        }
+        
+        // Start bell system
+        function startBellSystem() {
+            isBellSystemRunning = true;
+            
+            // Update UI
+            statusIndicator.className = 'status-indicator status-running';
+            statusText.textContent = 'Running';
+            startStopIcon.className = 'fas fa-stop';
+            toggleBellBtn.innerHTML = '<i class="fas fa-stop"></i> Stop Bell System';
+            systemStatus.textContent = 'Running';
+            
+            // Start checking schedule every second
+            checkInterval = setInterval(() => {
+                updateTime();
+            }, 1000);
+            
+            // Initial check
+            updateNextBell();
+            
+            console.log('Bell system started');
+        }
+        
+        // Stop bell system
+        function stopBellSystem() {
+            isBellSystemRunning = false;
+            
+            // Update UI
+            statusIndicator.className = 'status-indicator status-stopped';
+            statusText.textContent = 'Stopped';
+            startStopIcon.className = 'fas fa-play';
+            toggleBellBtn.innerHTML = '<i class="fas fa-play"></i> Start Bell System';
+            systemStatus.textContent = 'Stopped';
+            
+            // Clear interval
+            if (checkInterval) {
+                clearInterval(checkInterval);
+            }
+            
+            console.log('Bell system stopped');
+        }
+        
+        // Utility function to convert time string to minutes
+        function convertTimeToMinutes(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+        
+        // Format time for display (AM/PM)
+        function formatTimeDisplay(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            const period = hours >= 12 ? 'PM' : 'AM';
+            const displayHours = hours % 12 || 12;
+            return `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`;
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <!-- PWA Manifest -->
+    <script>
+        // Create a simple manifest for PWA support
+        const manifest = {
+            "name": "Sri Rahula College Bell System",
+            "short_name": "SRC Bell System",
+            "description": "Online school bell system for Sri Rahula College",
+            "start_url": ".",
+            "display": "standalone",
+            "background_color": "#0a2463",
+            "theme_color": "#0a2463",
+            "icons": [
+                {
+                    "src": "https://cdn-icons-png.flaticon.com/512/3067/3067256.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "https://cdn-icons-png.flaticon.com/512/3067/3067256.png",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                }
+            ]
+        };
+        
+        // Create and add manifest link
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        manifestLink.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest));
+        document.head.appendChild(manifestLink);
+        
+        // Service Worker registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(error => {
+                    console.log('ServiceWorker registration failed:', error);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

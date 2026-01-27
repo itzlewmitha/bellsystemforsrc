@@ -488,6 +488,81 @@
         .audio-control {
             display: none;
         }
+        
+        /* Now Playing Controls */
+        .now-playing {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--navy-blue);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 998;
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .now-playing.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .now-playing-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--light-gray);
+        }
+        
+        .now-playing-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .now-playing-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .now-playing-btn {
+            background-color: var(--light-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .now-playing-btn:hover {
+            background-color: #2d7fb8;
+        }
+        
+        .now-playing-btn.pause {
+            background-color: var(--warning);
+        }
+        
+        .now-playing-btn.pause:hover {
+            background-color: #e68900;
+        }
+        
+        .now-playing-btn.stop {
+            background-color: var(--danger);
+        }
+        
+        .now-playing-btn.stop:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
@@ -652,6 +727,22 @@
         </footer>
     </div>
     
+    <!-- Now Playing Controls -->
+    <div class="now-playing" id="nowPlaying">
+        <div class="now-playing-info">
+            <div class="now-playing-label">Now Playing:</div>
+            <div class="now-playing-name" id="nowPlayingName">Bell Name</div>
+        </div>
+        <div class="now-playing-controls">
+            <button class="now-playing-btn pause" id="pauseBellBtn" title="Pause/Resume">
+                <i class="fas fa-pause" id="pauseIcon"></i>
+            </button>
+            <button class="now-playing-btn stop" id="stopBellBtn" title="Stop">
+                <i class="fas fa-stop"></i>
+            </button>
+        </div>
+    </div>
+    
     <!-- PWA Install Prompt -->
     <div class="install-prompt" id="installPrompt">
         <p>Install Sri Rahula College Bell System for easy access!</p>
@@ -706,19 +797,19 @@
     <script>
         // Default bell schedule
         const defaultSchedule = [
-    { id: 'assembly',  name: 'School Start / Assembly', time: '07:30', sound: 'Bell.mp3', audioId: 'audio-assembly' },
-    { id: 'period1',   name: 'Period 1', time: '07:45', sound: 'Bell_06_1st.mp3', audioId: 'audio-period1' },
-    { id: 'period2',   name: 'Period 2', time: '08:25', sound: 'Bell_06_2nd.mp3', audioId: 'audio-period2' },
-    { id: 'period3',   name: 'Period 3', time: '09:05', sound: 'Bell_06_3rd.mp3', audioId: 'audio-period3' },
-    { id: 'period4',   name: 'Period 4', time: '09:45', sound: 'Bell_06_4th.mp3', audioId: 'audio-period4' },
-    { id: 'interval',  name: 'Interval', time: '10:30', sound: 'Bell_06_Int.mp3', audioId: 'audio-interval' },
-    { id: 'period5',   name: 'Period 5', time: '10:50', sound: 'Bell_06_5th.mp3', audioId: 'audio-period5' },
-    { id: 'period6',   name: 'Period 6', time: '11:30', sound: 'Bell_06_6th.mp3', audioId: 'audio-period6' },
-    { id: 'period7',   name: 'Period 7', time: '12:10', sound: 'Bell_06_7th.mp3', audioId: 'audio-period7' },
-    { id: 'period8',   name: 'Period 8', time: '12:50', sound: 'Bell_06_8th.mp3', audioId: 'audio-period8' },
-    { id: 'schoolEnd', name: 'School End Bell', time: '13:25', sound: 'Bell_06_8thEnd.mp3', audioId: 'audio-schoolend' },
-    { id: 'chaththa',  name: 'Chaththa Manawaka Gatha', time: '13:27', sound: 'Chaththa.mp3', audioId: 'audio-chaththa' }
-];
+            { id: 'assembly',  name: 'School Start / Assembly', time: '07:30', sound: 'Bell.mp3', audioId: 'audio-assembly' },
+            { id: 'period1',   name: 'Period 1', time: '07:45', sound: 'Bell_06_1st.mp3', audioId: 'audio-period1' },
+            { id: 'period2',   name: 'Period 2', time: '08:25', sound: 'Bell_06_2nd.mp3', audioId: 'audio-period2' },
+            { id: 'period3',   name: 'Period 3', time: '09:05', sound: 'Bell_06_3rd.mp3', audioId: 'audio-period3' },
+            { id: 'period4',   name: 'Period 4', time: '09:45', sound: 'Bell_06_4th.mp3', audioId: 'audio-period4' },
+            { id: 'interval',  name: 'Interval', time: '10:30', sound: 'Bell_06_Int.mp3', audioId: 'audio-interval' },
+            { id: 'period5',   name: 'Period 5', time: '10:50', sound: 'Bell_06_5th.mp3', audioId: 'audio-period5' },
+            { id: 'period6',   name: 'Period 6', time: '11:30', sound: 'Bell_06_6th.mp3', audioId: 'audio-period6' },
+            { id: 'period7',   name: 'Period 7', time: '12:10', sound: 'Bell_06_7th.mp3', audioId: 'audio-period7' },
+            { id: 'period8',   name: 'Period 8', time: '12:50', sound: 'Bell_06_8th.mp3', audioId: 'audio-period8' },
+            { id: 'schoolEnd', name: 'School End Bell', time: '13:25', sound: 'Bell_06_8thEnd.mp3', audioId: 'audio-schoolend' },
+            { id: 'chaththa',  name: 'Chaththa Manawaka Gatha', time: '13:27', sound: 'Chaththa.mp3', audioId: 'audio-chaththa' }
+        ];
      
         // Manual bell buttons data
         const manualBells = [
@@ -743,6 +834,8 @@
         let checkInterval;
         let deferredPrompt;
         let currentAudio = null; // Track currently playing audio
+        let currentBellName = ''; // Track current bell name
+        let isAudioPaused = false; // Track if audio is paused
         
         // DOM Elements
         const loginPage = document.getElementById('loginPage');
@@ -771,6 +864,11 @@
         const installPrompt = document.getElementById('installPrompt');
         const installBtn = document.getElementById('installBtn');
         const cancelInstallBtn = document.getElementById('cancelInstallBtn');
+        const nowPlaying = document.getElementById('nowPlaying');
+        const nowPlayingName = document.getElementById('nowPlayingName');
+        const pauseBellBtn = document.getElementById('pauseBellBtn');
+        const pauseIcon = document.getElementById('pauseIcon');
+        const stopBellBtn = document.getElementById('stopBellBtn');
         
         // Initialize the application
         function init() {
@@ -856,6 +954,12 @@
             // Special bell button
             specialBellBtn.addEventListener('click', () => playBellFromId('audio-special', 'Special/Emergency Bell'));
             
+            // Pause/Resume button
+            pauseBellBtn.addEventListener('click', togglePauseBell);
+            
+            // Stop button
+            stopBellBtn.addEventListener('click', stopCurrentBell);
+            
             // PWA install buttons
             installBtn.addEventListener('click', async () => {
                 if (deferredPrompt) {
@@ -897,6 +1001,9 @@
             if (isBellSystemRunning) {
                 stopBellSystem();
             }
+            
+            // Stop any playing bell
+            stopCurrentBell();
             
             // Reset UI
             dashboard.style.display = 'none';
@@ -1128,11 +1235,19 @@
                     console.log(`Playing ${bellName} bell`);
                     showBellNotification(bellName);
                     currentAudio = audioElement;
+                    currentBellName = bellName;
+                    isAudioPaused = false;
+                    
+                    // Show now playing controls
+                    showNowPlaying(bellName);
                     
                     // Reset currentAudio when sound ends
                     audioElement.onended = () => {
                         if (currentAudio === audioElement) {
+                            hideNowPlaying();
                             currentAudio = null;
+                            currentBellName = '';
+                            isAudioPaused = false;
                         }
                     };
                 }).catch(error => {
@@ -1141,6 +1256,46 @@
                     playFallbackBell(bellName);
                 });
             }
+        }
+        
+        // Toggle pause/resume for current bell
+        function togglePauseBell() {
+            if (!currentAudio) return;
+            
+            if (isAudioPaused) {
+                // Resume playing
+                currentAudio.play();
+                pauseIcon.className = 'fas fa-pause';
+                isAudioPaused = false;
+            } else {
+                // Pause playing
+                currentAudio.pause();
+                pauseIcon.className = 'fas fa-play';
+                isAudioPaused = true;
+            }
+        }
+        
+        // Stop current bell
+        function stopCurrentBell() {
+            if (!currentAudio) return;
+            
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            hideNowPlaying();
+            currentAudio = null;
+            currentBellName = '';
+            isAudioPaused = false;
+        }
+        
+        // Show now playing controls
+        function showNowPlaying(bellName) {
+            nowPlayingName.textContent = bellName;
+            nowPlaying.classList.add('show');
+        }
+        
+        // Hide now playing controls
+        function hideNowPlaying() {
+            nowPlaying.classList.remove('show');
         }
         
         // Fallback bell sound using online resources
@@ -1172,11 +1327,19 @@
                 console.log(`Playing fallback ${bellName} bell`);
                 showBellNotification(bellName);
                 currentAudio = audio;
+                currentBellName = bellName;
+                isAudioPaused = false;
+                
+                // Show now playing controls
+                showNowPlaying(bellName);
                 
                 // Reset currentAudio when sound ends
                 audio.onended = () => {
                     if (currentAudio === audio) {
+                        hideNowPlaying();
                         currentAudio = null;
+                        currentBellName = '';
+                        isAudioPaused = false;
                     }
                 };
             }).catch(error => {

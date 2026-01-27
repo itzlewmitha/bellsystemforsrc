@@ -839,7 +839,6 @@
         const dashboard = document.getElementById('dashboard');
         const loginForm = document.getElementById('loginForm');
         const logoutBtn = document.getElementById('logoutBtn');
-        const startStopBtn = document.getElementById('startStopBtn');
         const toggleBellBtn = document.getElementById('toggleBellBtn');
         const statusIndicator = document.getElementById('statusIndicator');
         const statusText = document.getElementById('statusText');
@@ -935,9 +934,6 @@
             
             // Logout button
             logoutBtn.addEventListener('click', logout);
-            
-            // Start/stop bell system (header button)
-            startStopBtn.addEventListener('click', toggleBellSystem);
             
             // Start/stop bell system (main button)
             toggleBellBtn.addEventListener('click', toggleBellSystem);

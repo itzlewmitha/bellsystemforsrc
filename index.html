@@ -18,6 +18,7 @@
             --success: #4caf50;
             --warning: #ff9800;
             --danger: #f44336;
+            --info: #2196f3;
         }
         
         * {
@@ -113,7 +114,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            width: 100%;
         }
         
         .btn-primary {
@@ -123,6 +123,33 @@
         
         .btn-primary:hover {
             background-color: var(--light-blue);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: var(--white);
+        }
+        
+        .btn-success:hover {
+            background-color: #45a049;
+        }
+        
+        .btn-info {
+            background-color: var(--info);
+            color: var(--white);
+        }
+        
+        .btn-info:hover {
+            background-color: #0b7dda;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--white);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e68900;
         }
         
         /* Dashboard */
@@ -282,6 +309,7 @@
         .schedule-table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 1rem;
         }
         
         .schedule-table th,
@@ -428,6 +456,10 @@
             align-items: center;
         }
         
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .main-content {
@@ -563,6 +595,116 @@
         .now-playing-btn.stop:hover {
             background-color: #d32f2f;
         }
+        
+        /* File Upload Section */
+        .file-upload-section {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+        
+        .file-upload-label {
+            display: block;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--light-blue);
+        }
+        
+        .file-input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .file-input {
+            flex: 1;
+            padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: var(--white);
+        }
+        
+        .file-format-info {
+            background-color: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid var(--info);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+        }
+        
+        .file-format-info h4 {
+            color: var(--info);
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-format-info ul {
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-format-info li {
+            margin-bottom: 0.25rem;
+        }
+        
+        .file-format-info code {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        .download-template {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: var(--light-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .download-template:hover {
+            text-decoration: underline;
+        }
+        
+        /* File Format Badges */
+        .format-badges {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .format-badge {
+            background-color: var(--info);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .format-badge.csv {
+            background-color: var(--success);
+        }
+        
+        .format-badge.json {
+            background-color: var(--warning);
+        }
+        
+        /* Schedule Controls */
+        .schedule-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .schedule-controls .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -647,16 +789,70 @@
                 <!-- Bell Schedule Editor -->
                 <div class="card">
                     <h2 class="card-title">
-                        <i class="fas fa-edit"></i> Bell Schedule
+                        <i class="fas fa-edit"></i> Bell Schedule Manager
                     </h2>
                     
+                    <!-- File Upload Section -->
+                    <div class="file-upload-section">
+                        <div class="format-badges">
+                            <span class="format-badge csv">CSV</span>
+                            <span class="format-badge json">JSON</span>
+                        </div>
+                        
+                        <label class="file-upload-label">
+                            <i class="fas fa-upload"></i> Upload Schedule File
+                        </label>
+                        
+                        <div class="file-input-wrapper">
+                            <input type="file" id="scheduleFile" class="file-input" accept=".csv,.json,.txt">
+                            <button type="button" id="uploadScheduleBtn" class="btn btn-success">
+                                <i class="fas fa-file-import"></i> Import
+                            </button>
+                        </div>
+                        
+                        <button type="button" id="downloadTemplateBtn" class="btn btn-info">
+                            <i class="fas fa-file-download"></i> Download Template
+                        </button>
+                        
+                        <div class="file-format-info">
+                            <h4><i class="fas fa-info-circle"></i> Supported File Formats:</h4>
+                            <ul>
+                                <li><strong>CSV Format:</strong> <code>time,name,sound,audioId</code></li>
+                                <li><strong>JSON Format:</strong> Array of objects with properties: time, name, sound, audioId</li>
+                                <li>Times should be in 24-hour format (HH:MM)</li>
+                                <li>Example: <code>07:30,School Start / Assembly,Bell.mp3,audio-assembly</code></li>
+                            </ul>
+                            <a href="#" id="csvTemplateLink" class="download-template">
+                                <i class="fas fa-download"></i> Download CSV Template
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Schedule Controls -->
+                    <div class="schedule-controls">
+                        <button class="btn btn-primary" id="saveScheduleBtn">
+                            <i class="fas fa-save"></i> Save Schedule
+                        </button>
+                        <button class="btn btn-warning" id="resetScheduleBtn">
+                            <i class="fas fa-undo"></i> Reset to Default
+                        </button>
+                        <button class="btn btn-info" id="exportScheduleBtn">
+                            <i class="fas fa-file-export"></i> Export Schedule
+                        </button>
+                        <button class="btn" id="clearScheduleBtn" style="background-color: var(--medium-gray);">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+                    
+                    <!-- Schedule Table -->
                     <div class="table-responsive">
                         <table class="schedule-table">
                             <thead>
                                 <tr>
-                                    <th>Bell</th>
                                     <th>Time</th>
-                                    <th>Action</th>
+                                    <th>Bell Name</th>
+                                    <th>Sound File</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="scheduleTable">
@@ -665,12 +861,9 @@
                         </table>
                     </div>
                     
-                    <div class="mt-3 d-flex justify-content-between">
-                        <button class="btn btn-primary" id="saveScheduleBtn">
-                            <i class="fas fa-save"></i> Save Schedule
-                        </button>
-                        <button class="btn" id="resetScheduleBtn" style="background-color: var(--medium-gray);">
-                            <i class="fas fa-undo"></i> Reset to Default
+                    <div class="mt-3">
+                        <button class="btn btn-primary" id="addBellBtn">
+                            <i class="fas fa-plus"></i> Add New Bell
                         </button>
                     </div>
                 </div>
@@ -705,15 +898,17 @@
                         <p><strong>Device Time:</strong> <span id="deviceTime">Syncing...</span></p>
                         <p><strong>Bell System Status:</strong> <span id="systemStatus">Not Running</span></p>
                         <p><strong>Last Bell:</strong> <span id="lastBell">None</span></p>
+                        <p><strong>Total Bells:</strong> <span id="totalBells">0</span></p>
+                        <p><strong>Next Auto Bell:</strong> <span id="nextAutoBell">--:--</span></p>
                     </div>
                     
                     <div class="mb-3">
                         <p><strong>Instructions:</strong></p>
                         <ul style="padding-left: 1.2rem; font-size: 0.9rem;">
-                            <li>Click "Start Bell System" to begin automatic bell ringing</li>
-                            <li>Edit bell times as needed, then click "Save Schedule"</li>
+                            <li>Upload CSV/JSON files to import custom schedules</li>
+                            <li>Edit times directly in the table, then click "Save Schedule"</li>
                             <li>Use manual controls to play bells anytime</li>
-                            <li>System uses your device's local time</li>
+                            <li>System uses your device's local time (Asia/Colombo)</li>
                         </ul>
                     </div>
                 </div>
@@ -723,7 +918,7 @@
         <!-- Footer -->
         <footer class="footer">
             <p>© All rights reserved SRC ICT Club</p>
-            <p>Sri Rahula College Bell System v1.0</p>
+            <p>Sri Rahula College Bell System v2.0 | Developed by Pix Studios Sri Lanka</p>
         </footer>
     </div>
     
@@ -827,6 +1022,23 @@
             { name: 'School End Chaththa', sound: 'Chaththa.mp3', audioId: 'audio-chaththa' }
         ];
         
+        // Available sound files for dropdown
+        const availableSounds = [
+            { value: 'Bell.mp3', label: 'Assembly Bell' },
+            { value: 'Bell_06_1st.mp3', label: 'Period 1 Bell' },
+            { value: 'Bell_06_2nd.mp3', label: 'Period 2 Bell' },
+            { value: 'Bell_06_3rd.mp3', label: 'Period 3 Bell' },
+            { value: 'Bell_06_4th.mp3', label: 'Period 4 Bell' },
+            { value: 'Bell_06_Int.mp3', label: 'Interval Bell' },
+            { value: 'Bell_06_5th.mp3', label: 'Period 5 Bell' },
+            { value: 'Bell_06_6th.mp3', label: 'Period 6 Bell' },
+            { value: 'Bell_06_7th.mp3', label: 'Period 7 Bell' },
+            { value: 'Bell_06_8th.mp3', label: 'Period 8 Bell' },
+            { value: 'Bell_06_8thEnd.mp3', label: 'School End Bell' },
+            { value: 'Chaththa.mp3', label: 'Chaththa Manawaka Gatha' },
+            { value: 'Special.mp3', label: 'Special/Emergency Bell' }
+        ];
+        
         // Application state
         let isLoggedIn = false;
         let isBellSystemRunning = false;
@@ -836,6 +1048,7 @@
         let currentAudio = null; // Track currently playing audio
         let currentBellName = ''; // Track current bell name
         let isAudioPaused = false; // Track if audio is paused
+        let nextBellId = 1; // For generating unique IDs for new bells
         
         // DOM Elements
         const loginPage = document.getElementById('loginPage');
@@ -869,6 +1082,15 @@
         const pauseBellBtn = document.getElementById('pauseBellBtn');
         const pauseIcon = document.getElementById('pauseIcon');
         const stopBellBtn = document.getElementById('stopBellBtn');
+        const scheduleFile = document.getElementById('scheduleFile');
+        const uploadScheduleBtn = document.getElementById('uploadScheduleBtn');
+        const downloadTemplateBtn = document.getElementById('downloadTemplateBtn');
+        const csvTemplateLink = document.getElementById('csvTemplateLink');
+        const exportScheduleBtn = document.getElementById('exportScheduleBtn');
+        const addBellBtn = document.getElementById('addBellBtn');
+        const clearScheduleBtn = document.getElementById('clearScheduleBtn');
+        const totalBells = document.getElementById('totalBells');
+        const nextAutoBell = document.getElementById('nextAutoBell');
         
         // Initialize the application
         function init() {
@@ -960,6 +1182,22 @@
             // Stop button
             stopBellBtn.addEventListener('click', stopCurrentBell);
             
+            // File upload button
+            uploadScheduleBtn.addEventListener('click', handleFileUpload);
+            
+            // Download template button
+            downloadTemplateBtn.addEventListener('click', downloadTemplate);
+            csvTemplateLink.addEventListener('click', downloadTemplate);
+            
+            // Export schedule button
+            exportScheduleBtn.addEventListener('click', exportSchedule);
+            
+            // Add new bell button
+            addBellBtn.addEventListener('click', addNewBell);
+            
+            // Clear schedule button
+            clearScheduleBtn.addEventListener('click', clearSchedule);
+            
             // PWA install buttons
             installBtn.addEventListener('click', async () => {
                 if (deferredPrompt) {
@@ -1017,24 +1255,45 @@
             const savedSchedule = localStorage.getItem('bellSchedule');
             if (savedSchedule) {
                 bellSchedule = JSON.parse(savedSchedule);
+                // Find the highest ID for new bells
+                nextBellId = bellSchedule.reduce((maxId, bell) => {
+                    const bellId = parseInt(bell.id?.replace('custom-', '') || 0);
+                    return Math.max(maxId, bellId);
+                }, 0) + 1;
             } else {
                 // Use default schedule
                 bellSchedule = JSON.parse(JSON.stringify(defaultSchedule));
+                nextBellId = 13; // Start after default IDs
             }
+            updateTotalBells();
         }
         
         // Save schedule to localStorage
         function saveSchedule() {
-            // Get updated times from the table
-            const timeInputs = document.querySelectorAll('.time-input');
-            timeInputs.forEach((input, index) => {
-                if (index < bellSchedule.length) {
-                    bellSchedule[index].time = input.value;
+            // Get updated values from the table
+            const rows = scheduleTable.querySelectorAll('tr');
+            const updatedSchedule = [];
+            
+            rows.forEach(row => {
+                const timeInput = row.querySelector('.time-input');
+                const nameInput = row.querySelector('.bell-name-input');
+                const soundSelect = row.querySelector('.sound-select');
+                const deleteBtn = row.querySelector('.delete-bell-btn');
+                
+                if (timeInput && nameInput && soundSelect) {
+                    const bellId = deleteBtn?.getAttribute('data-id') || `custom-${nextBellId++}`;
+                    updatedSchedule.push({
+                        id: bellId,
+                        name: nameInput.value,
+                        time: timeInput.value,
+                        sound: soundSelect.value,
+                        audioId: `audio-custom-${bellId}`
+                    });
                 }
             });
             
             // Sort schedule by time
-            bellSchedule.sort((a, b) => {
+            bellSchedule = updatedSchedule.sort((a, b) => {
                 const timeA = convertTimeToMinutes(a.time);
                 const timeB = convertTimeToMinutes(b.time);
                 return timeA - timeB;
@@ -1043,19 +1302,56 @@
             // Save to localStorage
             localStorage.setItem('bellSchedule', JSON.stringify(bellSchedule));
             
-            // Show success message
-            alert('Schedule saved successfully!');
+            // Update UI
+            updateTotalBells();
+            updateNextBellDisplay();
             
-            // Update next bell display
-            updateNextBell();
+            // Show success message
+            showNotification('Schedule saved successfully!', 'success');
         }
         
         // Reset schedule to default
         function resetSchedule() {
-            if (confirm('Are you sure you want to reset the schedule to default?')) {
+            if (confirm('Are you sure you want to reset the schedule to default? This will delete any custom bells.')) {
                 bellSchedule = JSON.parse(JSON.stringify(defaultSchedule));
+                nextBellId = 13;
                 renderScheduleTable();
-                alert('Schedule reset to default.');
+                saveSchedule();
+                showNotification('Schedule reset to default.', 'info');
+            }
+        }
+        
+        // Clear all bells from schedule
+        function clearSchedule() {
+            if (confirm('Are you sure you want to clear all bells from the schedule?')) {
+                bellSchedule = [];
+                renderScheduleTable();
+                saveSchedule();
+                showNotification('All bells cleared from schedule.', 'info');
+            }
+        }
+        
+        // Add new bell to schedule
+        function addNewBell() {
+            const newBell = {
+                id: `custom-${nextBellId++}`,
+                name: 'New Bell',
+                time: '08:00',
+                sound: 'Bell.mp3',
+                audioId: `audio-custom-${nextBellId}`
+            };
+            
+            bellSchedule.push(newBell);
+            renderScheduleTable();
+            showNotification('New bell added. Remember to save changes.', 'info');
+        }
+        
+        // Delete a bell from schedule
+        function deleteBell(bellId) {
+            if (confirm('Are you sure you want to delete this bell?')) {
+                bellSchedule = bellSchedule.filter(bell => bell.id !== bellId);
+                renderScheduleTable();
+                showNotification('Bell deleted. Remember to save changes.', 'warning');
             }
         }
         
@@ -1063,21 +1359,262 @@
         function renderScheduleTable() {
             scheduleTable.innerHTML = '';
             
+            if (bellSchedule.length === 0) {
+                scheduleTable.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center" style="padding: 2rem; color: var(--medium-gray);">
+                            <i class="fas fa-bell-slash" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                            <p>No bells in schedule. Upload a file or add a new bell.</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
             bellSchedule.forEach((bell, index) => {
                 const row = document.createElement('tr');
                 
+                // Create sound options HTML
+                let soundOptions = '';
+                availableSounds.forEach(sound => {
+                    const selected = sound.value === bell.sound ? 'selected' : '';
+                    soundOptions += `<option value="${sound.value}" ${selected}>${sound.label}</option>`;
+                });
+                
                 row.innerHTML = `
-                    <td>${bell.name}</td>
-                    <td><input type="time" class="time-input" value="${bell.time}"></td>
                     <td>
-                        <button class="btn-icon" onclick="playBellFromId('${bell.audioId}', '${bell.name}')" title="Play ${bell.name} Bell">
-                            <i class="fas fa-play"></i>
-                        </button>
+                        <input type="time" class="time-input" value="${bell.time}">
+                    </td>
+                    <td>
+                        <input type="text" class="bell-name-input" value="${bell.name}" style="width: 100%; padding: 0.5rem; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; color: var(--white);">
+                    </td>
+                    <td>
+                        <select class="sound-select" style="width: 100%; padding: 0.5rem; background-color: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px; color: var(--white);">
+                            ${soundOptions}
+                        </select>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <button class="btn-icon" onclick="playBellFromId('${bell.audioId}', '${bell.name}')" title="Play ${bell.name} Bell">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="btn-icon delete-bell-btn" data-id="${bell.id}" title="Delete Bell" style="color: var(--danger);">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 `;
                 
                 scheduleTable.appendChild(row);
             });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-bell-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const bellId = this.getAttribute('data-id');
+                    deleteBell(bellId);
+                });
+            });
+            
+            updateTotalBells();
+        }
+        
+        // Update total bells count
+        function updateTotalBells() {
+            totalBells.textContent = bellSchedule.length;
+        }
+        
+        // Handle file upload
+        function handleFileUpload() {
+            const file = scheduleFile.files[0];
+            if (!file) {
+                showNotification('Please select a file to upload.', 'warning');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    let importedSchedule = [];
+                    
+                    if (file.name.endsWith('.json')) {
+                        // Parse JSON file
+                        importedSchedule = JSON.parse(content);
+                    } else if (file.name.endsWith('.csv') || file.name.endsWith('.txt')) {
+                        // Parse CSV file
+                        importedSchedule = parseCSV(content);
+                    } else {
+                        throw new Error('Unsupported file format. Please upload CSV or JSON.');
+                    }
+                    
+                    // Validate imported data
+                    if (!Array.isArray(importedSchedule)) {
+                        throw new Error('File must contain an array of bell objects.');
+                    }
+                    
+                    // Process imported schedule
+                    const processedSchedule = importedSchedule.map((item, index) => {
+                        // Generate audioId based on sound file
+                        const soundFile = item.sound || item.soundFile || 'Bell.mp3';
+                        const audioId = `audio-${soundFile.replace('.mp3', '').replace(/[^a-zA-Z0-9]/g, '-')}-${index}`;
+                        
+                        return {
+                            id: `imported-${Date.now()}-${index}`,
+                            name: item.name || `Bell ${index + 1}`,
+                            time: item.time || '08:00',
+                            sound: soundFile,
+                            audioId: audioId
+                        };
+                    });
+                    
+                    // Add imported bells to existing schedule
+                    bellSchedule = [...bellSchedule, ...processedSchedule];
+                    
+                    // Sort by time
+                    bellSchedule.sort((a, b) => {
+                        const timeA = convertTimeToMinutes(a.time);
+                        const timeB = convertTimeToMinutes(b.time);
+                        return timeA - timeB;
+                    });
+                    
+                    // Update UI
+                    renderScheduleTable();
+                    
+                    // Clear file input
+                    scheduleFile.value = '';
+                    
+                    showNotification(`Successfully imported ${processedSchedule.length} bells. Remember to save changes.`, 'success');
+                    
+                } catch (error) {
+                    showNotification(`Error importing file: ${error.message}`, 'error');
+                    console.error('File import error:', error);
+                }
+            };
+            
+            reader.onerror = function() {
+                showNotification('Error reading file. Please try again.', 'error');
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // Parse CSV content
+        function parseCSV(csvContent) {
+            const lines = csvContent.split('\n');
+            const result = [];
+            
+            // Skip header if present
+            const startIndex = lines[0].toLowerCase().includes('time,name') ? 1 : 0;
+            
+            for (let i = startIndex; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const columns = line.split(',').map(col => col.trim());
+                if (columns.length >= 2) {
+                    result.push({
+                        time: columns[0],
+                        name: columns[1],
+                        sound: columns[2] || 'Bell.mp3',
+                        audioId: columns[3] || `audio-custom-${i}`
+                    });
+                }
+            }
+            
+            return result;
+        }
+        
+        // Download CSV template
+        function downloadTemplate(e) {
+            if (e) e.preventDefault();
+            
+            // Create CSV content
+            let csvContent = 'time,name,sound,audioId\n';
+            defaultSchedule.forEach(bell => {
+                csvContent += `${bell.time},${bell.name},${bell.sound},${bell.audioId}\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'bell_schedule_template.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('CSV template downloaded.', 'info');
+        }
+        
+        // Export schedule as JSON
+        function exportSchedule() {
+            if (bellSchedule.length === 0) {
+                showNotification('No schedule to export.', 'warning');
+                return;
+            }
+            
+            // Create JSON content
+            const exportData = bellSchedule.map(bell => ({
+                time: bell.time,
+                name: bell.name,
+                sound: bell.sound,
+                audioId: bell.audioId
+            }));
+            
+            const jsonContent = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bell_schedule_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification(`Exported ${bellSchedule.length} bells as JSON.`, 'success');
+        }
+        
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            document.querySelectorAll('.custom-notification').forEach(el => el.remove());
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `custom-notification`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${type === 'success' ? 'var(--success)' : 
+                                 type === 'error' ? 'var(--danger)' : 
+                                 type === 'warning' ? 'var(--warning)' : 'var(--info)'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                z-index: 1001;
+                font-weight: 600;
+                animation: slideIn 0.3s ease-out;
+                max-width: 400px;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
         }
         
         // Render manual bell buttons
@@ -1153,6 +1690,7 @@
             if (nextBell) {
                 nextBellName.textContent = nextBell.name;
                 nextBellTime.textContent = formatTimeDisplay(nextBell.time);
+                nextAutoBell.textContent = `${nextBell.time} (${nextBell.name})`;
                 
                 // Calculate countdown
                 const countdownDate = new Date(now);
@@ -1168,7 +1706,13 @@
                 nextBellName.textContent = 'No more bells today';
                 nextBellTime.textContent = '--:--';
                 countdown.textContent = '--:--:--';
+                nextAutoBell.textContent = '--:--';
             }
+        }
+        
+        // Update next bell display (without sorting)
+        function updateNextBellDisplay() {
+            updateNextBell();
         }
         
         // Update countdown timer
@@ -1216,14 +1760,29 @@
                 currentAudio.currentTime = 0;
             }
             
-            // Get audio element
-            const audioElement = document.getElementById(audioId);
+            // Get audio element or create a new one
+            let audioElement = document.getElementById(audioId);
             
+            // If audio element doesn't exist, create it
             if (!audioElement) {
-                console.error(`Audio element not found: ${audioId}`);
-                // Fallback to online sound
-                playFallbackBell(bellName);
-                return;
+                audioElement = document.createElement('audio');
+                audioElement.id = audioId;
+                audioElement.preload = 'auto';
+                
+                // Find the sound file from schedule
+                const bell = bellSchedule.find(b => b.audioId === audioId);
+                if (bell && bell.sound) {
+                    const source = document.createElement('source');
+                    source.src = `bells/${bell.sound}`;
+                    source.type = 'audio/mpeg';
+                    audioElement.appendChild(source);
+                } else {
+                    // Use fallback
+                    playFallbackBell(bellName);
+                    return;
+                }
+                
+                document.querySelector('.audio-control').appendChild(audioElement);
             }
             
             // Play the sound
@@ -1374,7 +1933,9 @@
             setTimeout(() => {
                 notification.style.animation = 'slideOut 0.3s ease-out';
                 setTimeout(() => {
-                    document.body.removeChild(notification);
+                    if (notification.parentNode) {
+                        document.body.removeChild(notification);
+                    }
                 }, 300);
             }, 3000);
             
